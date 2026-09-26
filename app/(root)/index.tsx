@@ -17,6 +17,7 @@ import {
   SearchResultMenuMethods,
 } from '@/components';
 import {
+  USE_SAME_ORIGIN_API,
   isWebsocketConnectingAtom,
   isWebsocketErrorAtom,
   useSettingAtom,
@@ -26,11 +27,13 @@ import { useQueue } from '@/hooks';
 import { QueueSchema, SearchResultSong } from '@/schemas';
 import { addSongToQueue, removeSongFromQueue } from '@/services';
 import { pollQueue, pollQueueForIndex } from '@/utils';
+import { isConnectionConfigured } from '@/utils/connectionUrl';
 
 const Queue = () => {
   const { t } = useTranslation('translation');
 
   const [ipAddress] = useSettingAtom('ipAddress');
+  const [port] = useSettingAtom('port');
 
   const {
     data: queue,
@@ -105,7 +108,7 @@ const Queue = () => {
     [refetchQueue]
   );
 
-  if (!ipAddress)
+  if (!isConnectionConfigured(ipAddress, port, USE_SAME_ORIGIN_API))
     return (
       <ConnectionError
         type='notConfigured'

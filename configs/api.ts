@@ -1,7 +1,9 @@
 import axios from 'axios';
 
 import { DEFAULT_SETTINGS } from '../constants/defaultSettings';
+import { getConnectionBaseUrl } from '../utils/connectionUrl';
 
+import { getWebOrigin } from './connection';
 import { accessTokenAtom, settingAtomFamily, store } from './storage';
 
 export const API_VERSION = 'v1';
@@ -14,7 +16,7 @@ const getHost = () => {
     (store.get(settingAtomFamily('ipAddress')) as string) || '0.0.0.0';
   const port =
     (store.get(settingAtomFamily('port')) as string) || DEFAULT_SETTINGS.port;
-  return `http://${ipAddress}:${port}`;
+  return getConnectionBaseUrl('http', ipAddress, port, getWebOrigin());
 };
 
 const authenticate = async () => {

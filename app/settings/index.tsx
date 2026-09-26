@@ -10,7 +10,12 @@ import {
   SettingsSubheader,
   TextDialog,
 } from '@/components';
-import { settingAtomFamily, store, useSettingAtom } from '@/configs';
+import {
+  USE_SAME_ORIGIN_API,
+  settingAtomFamily,
+  store,
+  useSettingAtom,
+} from '@/configs';
 import {
   OPTION_SETTINGS,
   SETTING_CHANGE_CALLBACKS,
@@ -96,13 +101,15 @@ const Settings = () => {
 
   return (
     <>
-      <List.Section>
-        <SettingsSubheader>{t('connection.title')}</SettingsSubheader>
-        <ConnectionSettings
-          openTextDialog={openTextDialog}
-          openOptionDialog={openOptionDialog}
-        />
-      </List.Section>
+      {!USE_SAME_ORIGIN_API && (
+        <List.Section>
+          <SettingsSubheader>{t('connection.title')}</SettingsSubheader>
+          <ConnectionSettings
+            openTextDialog={openTextDialog}
+            openOptionDialog={openOptionDialog}
+          />
+        </List.Section>
+      )}
       <List.Section>
         <SettingsSubheader>{t('appearance.title')}</SettingsSubheader>
         <SettingsListItem

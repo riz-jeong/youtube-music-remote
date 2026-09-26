@@ -3,8 +3,13 @@ import { useCallback, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
 
-import { seekBarValueAtom, useSettingAtom } from '@/configs';
+import {
+  USE_SAME_ORIGIN_API,
+  seekBarValueAtom,
+  useSettingAtom,
+} from '@/configs';
 import { SongInfoSchema } from '@/schemas';
+import { isConnectionConfigured } from '@/utils/connectionUrl';
 
 /**
  * Separate hook to fetch the now playing song elapsed seconds.
@@ -56,7 +61,7 @@ export const useNowPlaying = () => {
   const [ipAddress] = useSettingAtom('ipAddress');
   const [port] = useSettingAtom('port');
 
-  const enabled = !!ipAddress && !!port;
+  const enabled = isConnectionConfigured(ipAddress, port, USE_SAME_ORIGIN_API);
 
   const useQueryResult = useQuery({
     queryKey: ['nowPlaying'],

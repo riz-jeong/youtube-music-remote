@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { useSettingAtom } from '@/configs';
+import { USE_SAME_ORIGIN_API, useSettingAtom } from '@/configs';
 import { getQueue } from '@/services';
+import { isConnectionConfigured } from '@/utils/connectionUrl';
 
 /**
  * Fetches the current queue of songs.
@@ -14,7 +15,7 @@ export const useQueue = () => {
   const [ipAddress] = useSettingAtom('ipAddress');
   const [port] = useSettingAtom('port');
 
-  const enabled = !!ipAddress && !!port;
+  const enabled = isConnectionConfigured(ipAddress, port, USE_SAME_ORIGIN_API);
 
   const useQueryResult = useQuery({
     queryKey: ['queue'],

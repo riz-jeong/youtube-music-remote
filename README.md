@@ -35,6 +35,25 @@ The web version can be accessed [here](https://youtube-music-remote.vercel.app) 
 
 You need to disable a security feature for the site first. YouTube Music's API Server is hosted locally using HTTP and the browser blocks requests to the server for that reason.
 
+### Self-hosting for iPhone Safari (same Wi-Fi network)
+
+The public HTTPS web app cannot call the desktop server's HTTP and `ws://` endpoints from Safari. Host the web app on the computer running YouTube Music Desktop and put the API behind the **same origin**. The included Caddy configuration serves the app and forwards `/api/*` (including WebSockets) and `/auth/*` to the desktop plugin.
+
+1. Install Node.js and [Caddy](https://caddyserver.com/docs/install). Enable Corepack with `corepack enable` (if `corepack` is missing, run `npm install -g corepack` first). Start YouTube Music Desktop and enable its API Server plugin on port `26538`. Keep the desktop computer and iPhone on the same Wi-Fi network. If the API plugin uses a different port, edit `deploy/Caddyfile.lan`.
+2. From this repository's root, build the web app and start Caddy:
+
+   ```bash
+   yarn install --immutable
+   EXPO_PUBLIC_SAME_ORIGIN_API=true yarn expo export -p web
+   caddy run --config deploy/Caddyfile.lan
+   ```
+
+3. Find the computer's LAN IP address (on macOS Wi-Fi, `ipconfig getifaddr en0`). Open `http://COMPUTER_LAN_IP:8080` in iPhone Safari. Allow incoming connections to Caddy in the computer's firewall if prompted. You do not need to enter the desktop IP or port in the web app's settings in this build.
+
+The web page, REST requests, and WebSocket all use `http://COMPUTER_LAN_IP:8080` (WebSocket uses `ws://`). This avoids an HTTPS page making mixed-content requests. The page is still plain HTTP, so **keep this listener on a trusted LAN**. The desktop plugin's `No authorization` mode allows anyone who can reach this listener to control playback. Do not forward port 8080 from your router or expose it publicly.
+
+For access outside your LAN, one private option is [Tailscale Serve](https://tailscale.com/docs/features/tailscale-serve): install Tailscale on both the desktop and iPhone, sign in to the same tailnet, keep Caddy running, and run `tailscale serve 8080` on the desktop. Open the HTTPS `*.ts.net` URL printed by Tailscale on the iPhone. The app will use `https://` and `wss://` through that same hostname. If you only use Tailscale, add `bind 127.0.0.1` inside the Caddy site block to stop direct LAN access. Do **not** use Tailscale Funnel here: it makes the unauthenticated playback API public. A static host such as Vercel cannot proxy to a private LAN address by itself. Rebuild with `EXPO_PUBLIC_SAME_ORIGIN_API=true` for any same-origin deployment; the value is baked into the static bundle.
+
 ### Chrome (and other Chromium-based browsers)
 
 1. Go to the web app.

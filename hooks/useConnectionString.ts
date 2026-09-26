@@ -2,12 +2,14 @@ import { useEffect } from 'react';
 
 import {
   API_VERSION,
+  getWebOrigin,
   settingAtomFamily,
   store,
   useSettingAtom,
 } from '@/configs';
 import { DEFAULT_SETTINGS, MIN_CONNECTION_PROFILES } from '@/constants';
 import { SettingsSchema } from '@/schemas';
+import { getConnectionBaseUrl } from '@/utils/connectionUrl';
 
 const DEFAULT_CONNECTION_PROFILE: SettingsSchema['connectionProfiles'][0] = {
   ipAddress: '',
@@ -67,5 +69,11 @@ export const useConnectionString = (protocol: 'http' | 'ws' = 'http') => {
     }
   }, [connectionProfile, setConnectionProfiles, setConnectionProfile]);
 
-  return `${protocol}://${ipAddress || '0.0.0.0'}:${port || DEFAULT_SETTINGS.port}/api/${API_VERSION}`;
+  const origin = getConnectionBaseUrl(
+    protocol,
+    ipAddress || '0.0.0.0',
+    port || DEFAULT_SETTINGS.port,
+    getWebOrigin()
+  );
+  return `${origin}/api/${API_VERSION}`;
 };

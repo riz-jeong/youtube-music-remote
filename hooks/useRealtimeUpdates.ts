@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket-lite';
 
 import {
+  USE_SAME_ORIGIN_API,
   isWebsocketConnectingAtom,
   isWebsocketErrorAtom,
   queryClient,
@@ -13,6 +14,7 @@ import {
 } from '@/configs';
 import { WebsocketDataSchema, WebsocketDataTypes } from '@/schemas';
 import { getQueue } from '@/services';
+import { isConnectionConfigured } from '@/utils/connectionUrl';
 import { getSeekBarValue } from '@/utils/getSeekBarValue';
 
 import { useConnectionString } from './useConnectionString';
@@ -26,6 +28,7 @@ const QUEUE_REFETCH_DELAY_MS = 500;
  */
 export const useRealtimeUpdates = (enabled: boolean) => {
   const [ipAddress] = useSettingAtom('ipAddress');
+  const [port] = useSettingAtom('port');
   const connectionString = useConnectionString('ws');
   const url = `${connectionString}/ws`;
 
@@ -36,7 +39,8 @@ export const useRealtimeUpdates = (enabled: boolean) => {
 
   const ws = useWebSocket({
     url,
-    connect: enabled && !!ipAddress,
+    connect:
+      enabled && isConnectionConfigured(ipAddress, port, USE_SAME_ORIGIN_API),
     onClose: () => {
       queryClient.clear();
     },

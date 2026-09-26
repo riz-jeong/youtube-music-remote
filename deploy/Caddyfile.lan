@@ -1,0 +1,13 @@
+:8080 {
+    root * ./dist
+
+    @desktop_api path /api /api/* /auth /auth/*
+    handle @desktop_api {
+        reverse_proxy 127.0.0.1:26538
+    }
+
+    handle {
+        try_files {path} /index.html
+        file_server
+    }
+}
