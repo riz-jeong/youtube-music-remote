@@ -11,7 +11,7 @@ export * from './breakpoints';
 export * from './defaultSettings';
 
 // Languages - should be sorted in English alphabetical order
-export const LANGUAGES = ['en', 'ja'] as const;
+export const LANGUAGES = ['en', 'ja', 'ko'] as const;
 
 // Settings
 export const MIN_CONNECTION_PROFILES = 5;

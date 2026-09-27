@@ -91,7 +91,8 @@
       "languages": {
         "system": "System language",
         "en": "English",
-        "ja": "Japanese"
+        "ja": "Japanese",
+        "ko": "Korean"
       },
       "keepScreenOn": "Keep screen on",
       "checkForUpdatesOnAppStart": "Check for updates on app start"
@@ -121,5 +122,9 @@
     "unknownArtist": "Unknown artist",
     "moreActions": "More actions",
     "clear": "Clear"
+  },
+  "notFound": {
+    "title": "Oops!",
+    "message": "This screen doesn't exist."
   }
 }

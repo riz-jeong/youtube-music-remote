@@ -132,9 +132,12 @@ const StackWithConfig = () => {
 
   // update i18n language when language setting changes
   useEffect(() => {
-    i18n.changeLanguage(
-      language === 'system' ? systemLanguage : (language as string)
-    );
+    const selectedLanguage =
+      language === 'system' ? systemLanguage : (language as string);
+    i18n.changeLanguage(selectedLanguage);
+    if (Platform.OS === 'web') {
+      document.documentElement.lang = selectedLanguage;
+    }
   }, [i18n, language, systemLanguage]);
 
   const activeTheme = useMemo(

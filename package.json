@@ -10,6 +10,7 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "test:connection": "node --test tests/connectionUrl.test.mjs",
+    "test:locales": "node --test tests/locales.test.mjs",
     "lint": "expo lint",
     "build:android": "expo prebuild --clean && expo run:android --variant release",
     "postversion": "react-native-version"

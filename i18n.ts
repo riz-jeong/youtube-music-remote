@@ -3,7 +3,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 import { LANGUAGES } from './constants';
-import { en, ja } from './locales';
+import { en, ja, ko } from './locales';
 
 i18n
   .use({
@@ -20,6 +20,9 @@ i18n
       },
       ja: {
         translation: ja,
+      },
+      ko: {
+        translation: ko,
       },
     },
   });

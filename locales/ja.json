@@ -91,7 +91,8 @@
       "languages": {
         "system": "システム言語",
         "en": "英語",
-        "ja": "日本語"
+        "ja": "日本語",
+        "ko": "韓国語"
       },
       "keepScreenOn": "画面をオンに保つ",
       "checkForUpdatesOnAppStart": "アプリ起動時に更新を確認"
@@ -121,5 +122,9 @@
     "unknownArtist": "不明なアーティスト",
     "moreActions": "その他のアクション",
     "clear": "クリア"
+  },
+  "notFound": {
+    "title": "おっと！",
+    "message": "この画面は存在しません。"
   }
 }

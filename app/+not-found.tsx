@@ -1,15 +1,18 @@
 import { Link } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 import { Appbar } from 'react-native-paper';
 
 export default function NotFoundScreen() {
+  const { t } = useTranslation('translation', { keyPrefix: 'notFound' });
+
   return (
     <>
       <Appbar.Header>
-        <Appbar.Content title='Oops!' />
+        <Appbar.Content title={t('title')} />
       </Appbar.Header>
       <View style={styles.container}>
-        <Text>This screen doesn&quot;t exist.</Text>
+        <Text>{t('message')}</Text>
         <Link href='/' style={styles.link}></Link>
       </View>
     </>
