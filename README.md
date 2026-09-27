@@ -39,16 +39,22 @@ You need to disable a security feature for the site first. YouTube Music's API S
 
 The public HTTPS web app cannot call the desktop server's HTTP and `ws://` endpoints from Safari. Host the web app on the computer running YouTube Music Desktop and put the API behind the **same origin**. The included Caddy configuration serves the app and forwards `/api/*` (including WebSockets) and `/auth/*` to the desktop plugin.
 
-1. Install Node.js and [Caddy](https://caddyserver.com/docs/install). Enable Corepack with `corepack enable` (if `corepack` is missing, run `npm install -g corepack` first). Start YouTube Music Desktop and enable its API Server plugin on port `26538`. Keep the desktop computer and iPhone on the same Wi-Fi network. If the API plugin uses a different port, edit `deploy/Caddyfile.lan`.
+**One-click start on macOS:** Install Node.js, [Caddy](https://caddyserver.com/docs/install), and Yarn via Corepack once. Enable the desktop API Server plugin on port `26538`. Then double-click `start-server.command` in Finder. It finds the API's listening address, installs project dependencies if needed, builds the web app, and starts Caddy. The Terminal window shows the iPhone URL; keep it open while using the app. If Finder says the file is not executable, run `chmod +x start-server.command` once from this repository's directory.
+
+To run it manually or use a different API port, follow these steps:
+
+1. Install Node.js and [Caddy](https://caddyserver.com/docs/install). Enable Corepack with `corepack enable` (if `corepack` is missing, run `npm install -g corepack` first). Start YouTube Music Desktop and enable its API Server plugin. Keep the desktop computer and iPhone on the same Wi-Fi network. Check which address and port the API Server listens on: `lsof -nP -iTCP:26538 -sTCP:LISTEN` on macOS. It may listen on the computer's LAN IP rather than `127.0.0.1`.
 2. From this repository's root, build the web app and start Caddy:
 
    ```bash
    yarn install --immutable
    EXPO_PUBLIC_SAME_ORIGIN_API=true yarn expo export -p web
-   caddy run --config deploy/Caddyfile.lan
+   DESKTOP_API_UPSTREAM=127.0.0.1:26538 caddy run --config deploy/Caddyfile.lan
    ```
 
-3. Find the computer's LAN IP address (on macOS Wi-Fi, `ipconfig getifaddr en0`). Open `http://COMPUTER_LAN_IP:8080` in iPhone Safari. Allow incoming connections to Caddy in the computer's firewall if prompted. You do not need to enter the desktop IP or port in the web app's settings in this build.
+   Replace `127.0.0.1:26538` with the actual listening address and port shown by `lsof` (for example, `192.168.1.40:26538`). Run Caddy from the repository root so `./dist` resolves correctly. Keep this terminal open while using the app.
+
+3. Find the computer's LAN IP address (on macOS Wi-Fi, `ipconfig getifaddr en0`; on other connections, check the active network service in System Settings). Open `http://COMPUTER_LAN_IP:8080` in iPhone Safari. Allow incoming connections to Caddy in the computer's firewall if prompted. You do not need to enter the desktop IP or port in the web app's settings in this build.
 
 The web page, REST requests, and WebSocket all use `http://COMPUTER_LAN_IP:8080` (WebSocket uses `ws://`). This avoids an HTTPS page making mixed-content requests. The page is still plain HTTP, so **keep this listener on a trusted LAN**. The desktop plugin's `No authorization` mode allows anyone who can reach this listener to control playback. Do not forward port 8080 from your router or expose it publicly.
 
